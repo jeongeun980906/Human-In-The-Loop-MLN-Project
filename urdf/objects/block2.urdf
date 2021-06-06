@@ -1,19 +1,18 @@
-<robot name="block">
+<robot name="block2">
   <link name="block">
 
     <inertial>
       <origin xyz="0 0 0" />
-      <mass value="0.00001" />
+      <mass value="0.001" />
       <inertia  ixx="0.00003375" ixy="0.0"  ixz="0.0"  iyy="0.00003375"  iyz="0.0"  izz="0.00003375" />
     </inertial>
-
     <visual>
       <origin xyz="0 0 0"/>
       <geometry>
         <cylinder length = "0.1" radius = "0.03"/>
       </geometry>
       <material name="red">
-        <color rgba="0.4 1.0 0.4 1.0"/>
+        <color rgba="1.0 0.4 0.4 1.0"/>
       </material>
     </visual>
 

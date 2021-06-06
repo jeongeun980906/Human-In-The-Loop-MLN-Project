@@ -12,7 +12,7 @@ from generate import BOX
 import cv2
 
 class robot_HIL():
-    def __init__(self,N):
+    def __init__(self):
         self.serverMode = p.GUI # GUI/DIRECT
         self.sisbotUrdfPath = "./urdf/ur5_ee.urdf"
 
@@ -20,9 +20,7 @@ class robot_HIL():
         self.physicsClient = p.connect(self.serverMode)
         # add search path for loadURDFs
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
-        self.N=N
         self.load_urdf()
-        
         # define world
         #p.setGravity(0,0,-10) # NOTE
     def load_urdf(self):
@@ -33,8 +31,8 @@ class robot_HIL():
             # deskStartPos = [0.0, -0.69, 0.85]
             # deskStartOrientation = p.getQuaternionFromEuler([0, 0, 0])
             # self.boxId1 = p.loadURDF("./urdf/objects/block.urdf", deskStartPos, deskStartOrientation)
-            self.BOX=BOX(self.N)
-            self.BOX.generate()
+            # self.BOX=BOX()
+            # self.BOX.generate()
             self.load_boxes()
             tableStartPos = [0.0, -0.8, 0.8]
             tableStartOrientation = p.getQuaternionFromEuler([0, 0, 0])
@@ -65,12 +63,12 @@ class robot_HIL():
     
     def load_boxes(self):
         self.boxId=[]
-        deskStartPos = [self.BOX.res_y[0], self.BOX.res_x[0], 0.85]
+        deskStartPos = [0,-0.8, 0.85]
         deskStartOrientation = p.getQuaternionFromEuler([0, 0, 0])
         temp = p.loadURDF("./urdf/objects/block.urdf", deskStartPos, deskStartOrientation)  
         self.boxId.append(temp)
-        for i in range(self.N-1):      
-            deskStartPos = [self.BOX.res_y[i+1], self.BOX.res_x[i+1], 0.85]
+        for i in range(4):        
+            deskStartPos = [0.03*(2*(i-1)+1),-0.6-0.1*i, 0.85]
             temp = p.loadURDF("./urdf/objects/block2.urdf", deskStartPos, deskStartOrientation)        
             self.boxId.append(temp)
     
@@ -110,10 +108,10 @@ class robot_HIL():
         goal_pos, _ = p.getBasePositionAndOrientation(self.boxId[0])
         goal_pos=list(goal_pos[:2])
         dis=self.distance(goal_pos,ee_pos)
-        print(dis)
         if dis<0.01:
             return True
         return False
+
     def get_path(self,thres):
         ee_pos = self.ee_pos()[:2]
         goal_pos, _ = p.getBasePositionAndOrientation(self.boxId[0])
@@ -123,7 +121,7 @@ class robot_HIL():
         res=0
         min_dis=100
         is_left=None
-        for i in range(self.N-1):
+        for i in range(4):
             ID=self.boxId[i+1]
             pos,_=p.getBasePositionAndOrientation(ID)
             pos=np.asarray(list(pos[:2]))
@@ -138,7 +136,7 @@ class robot_HIL():
                         is_left=1
                     else:
                         is_left=-1
-        return res,is_left 
+        return res,is_left
 
     def distance(self,x1,x2):
         res=0
@@ -146,12 +144,14 @@ class robot_HIL():
             #print(x1,x2)
             res+=(x1-x2)**2
         return math.sqrt(res)
+
     def block_pos(self,ID):
         pos,_=p.getBasePositionAndOrientation(ID)
         return list(pos)
+
     def state(self):
         state=[]
-        for i in range(self.N):
+        for i in range(5):
             ID=self.boxId[i]
             pos,_=p.getBasePositionAndOrientation(ID)
             pos=list(pos[:2])
@@ -165,7 +165,7 @@ class robot_HIL():
         return state
     def marker(self):
         res=[]
-        for i in range(self.N-1):
+        for i in range(4):
             ID=self.boxId[i+1]
             pos,_=p.getBasePositionAndOrientation(ID)
             pos=list(pos[:2])
@@ -173,17 +173,6 @@ class robot_HIL():
             y=int(-(pos[1]+0.6)*240+115)
             res.append((x,y))
         return res
-
-    def stuck(self):
-        for i in range(self.N-1):
-            ID=self.boxId[i+1]
-            pos,_=p.getBasePositionAndOrientation(ID)
-            pos=list(pos[:2])
-            ee_pos = self.ee_pos()[:2]
-            if abs(pos[0]-ee_pos[0])<0.1 and abs(ee_pos[1]-pos[1])<0.01:
-                return True
-        return False
-
     def is_left(self,id):
         pos=self.ee_pos()
         pos=list(pos[:2])
@@ -196,17 +185,21 @@ class robot_HIL():
         else:
             return 1
 
+
+
 if __name__=='__main__':
     robot=robot_HIL()
     for _ in range(10):
-        flag=1
+        flag=0
         cv2.namedWindow('image')
         while True:
-            pos,ori=robot.ee_pos()
+            pos=robot.ee_pos()
             img = robot.get_img()
-            print(robot.get_path(0.07))
+            print(robot.get_path(0.05))
             img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
             cv2.imshow('image',img)
+            if flag==0:
+                pass
             k = cv2.waitKey(1) & 0xFF
             if k==ord('w'):
                 pos[1]+= 0.01
