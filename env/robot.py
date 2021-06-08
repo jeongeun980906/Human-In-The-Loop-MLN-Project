@@ -3,12 +3,12 @@ import time
 import pdb
 import pybullet as p
 import pybullet_data
-import utils_ur5
+import env.utils_ur5
 from collections import deque
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from generate import BOX
+from env.generate import BOX
 import cv2
 
 class robot_HIL():
