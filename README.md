@@ -13,10 +13,10 @@ For more details, the presentation url is here.
 
 ## Results
 **Toy Task**
-![Toy task](https://github.com/jeongeun980906/Human-In-The-Loop-MLN-Project/blob/master/video/toy_task.gif)
+![Toy task](https://github.com/jeongeun980906/Human-In-The-Loop-MLN-Project/blob/master/videos/toy_task.gif)
 
 **Main Task**
-![Main task](https://github.com/jeongeun980906/Human-In-The-Loop-MLN-Project/blob/master/video/main_task.gif)
+![Main task](https://github.com/jeongeun980906/Human-In-The-Loop-MLN-Project/blob/master/videos/main_task.gif)
 
 ## Requirements
 - pybullet
