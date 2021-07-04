@@ -6,7 +6,7 @@ The details about this paper is in [Paper](https://pubs.rpapallas.com/icra2020/)
 
 I divided global task planner with "Mixture of Logit Networks" and heuristic local planner.
 Mixture of Logit Networks (i.e., MLN) can acheive both epistemic uncertanty and aleatoric uncertainty which makes 
-robots to stop the its movement and give ask for human help in high uncertainty regions.
+robots to stop the its movement and ask for human help in high uncertainty regions.
 
 For more details, the presentation url is here.
 [Presentation Video](https://www.youtube.com/watch?v=uXTpxWBCBlA&t=276s)
